@@ -101,5 +101,8 @@ def ResNet50():
 def ResNet101():
     return ResNet(Bottleneck, [3, 4, 23, 3])
 
+def ResNet101V2():
+    return ResNet(Bottleneck, [3, 4, 10, 3])
+
 def ResNet152():
     return ResNet(Bottleneck, [3, 8, 36, 3])

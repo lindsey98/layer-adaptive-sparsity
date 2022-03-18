@@ -36,6 +36,34 @@ def model_and_opt_loader(model_string,DEVICE):
             "steps": 40000,
             "scheduler": None
         }
+    elif model_string == 'resnet101':
+        model = ResNet101().to(DEVICE)
+        amount = 0.20
+        batch_size = 128
+        opt_pre = {
+            "optimizer": partial(optim.SGD,lr=0.01, momentum=0.9, weight_decay=0.001),
+            "steps": 50,
+            "scheduler": None
+        }
+        opt_post = {
+            "optimizer": partial(optim.SGD,lr=0.01, momentum=0.9, weight_decay=0.001),
+            "steps": 40,
+            "scheduler": None
+        }
+    elif model_string == 'resnet101v2':
+        model = ResNet101V2().to(DEVICE)
+        amount = 0.20
+        batch_size = 128
+        opt_pre = {
+            "optimizer": partial(optim.SGD,lr=0.01, momentum=0.9, weight_decay=0.001),
+            "steps": 50,
+            "scheduler": None
+        }
+        opt_post = {
+            "optimizer": partial(optim.SGD,lr=0.01, momentum=0.9, weight_decay=0.001),
+            "steps": 40,
+            "scheduler": None
+        }
     elif model_string == 'densenet':
         model = DenseNet121().to(DEVICE)
         amount = 0.20
