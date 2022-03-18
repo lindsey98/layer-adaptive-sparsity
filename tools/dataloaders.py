@@ -2,7 +2,8 @@ import torch
 from tools.datasets import *
 
 data_route      = 'data/'
-cifar10_strings = ['vgg16','resnet18','densenet','effnet', 'resnet101', 'resnet101v2']
+cifar10_strings = ['vgg16','resnet18','densenet','effnet', 'resnet101', 'resnet101v2',
+                   'resnet152', 'resnet152v2', 'resnet152v3']
 
 def dataset_loader(model,batch_size=100,num_workers=5):
     if model in cifar10_strings:

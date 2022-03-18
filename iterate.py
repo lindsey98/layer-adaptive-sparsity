@@ -6,8 +6,10 @@ from tools import *
 parser = argparse.ArgumentParser()
 parser.add_argument('--seed', type=int, default=42, help='random seed')
 parser.add_argument('--cuda', type=int, default=1, help='cuda number')
-parser.add_argument('--model', type=str, default='resnet101', help='network')
-parser.add_argument('--weights_path', type=str, default='dicts/resnet101_1.pth', help='weights path')
+parser.add_argument('--model', type=str, default='resnet152', help='network')
+parser.add_argument('--weights_path', type=str,
+                    default='dicts/resnet152_1.pth',
+                    help='weights path')
 parser.add_argument('--pruner', type=str, default='lamp', help='pruning method')
 parser.add_argument('--iter_start', type=int, default=1, help='start iteration for pruning')
 parser.add_argument('--iter_end', type=int, default=1, help='start iteration for pruning')

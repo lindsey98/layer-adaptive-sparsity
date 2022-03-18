@@ -51,6 +51,48 @@ def model_and_opt_loader(model_string,DEVICE,weights_path=None):
             "steps": 40,
             "scheduler": None
         }
+    elif model_string == 'resnet152':
+        model = ResNet152().to(DEVICE)
+        amount = 0.20
+        batch_size = 128
+        opt_pre = {
+            "optimizer": partial(optim.SGD,lr=0.01, momentum=0.9, weight_decay=0.001),
+            "steps": 50,
+            "scheduler": None
+        }
+        opt_post = {
+            "optimizer": partial(optim.SGD,lr=0.01, momentum=0.9, weight_decay=0.001),
+            "steps": 40,
+            "scheduler": None
+        }
+    elif model_string == 'resnet152v2':
+        model = ResNet152V2().to(DEVICE)
+        amount = 0.20
+        batch_size = 128
+        opt_pre = {
+            "optimizer": partial(optim.SGD,lr=0.01, momentum=0.9, weight_decay=0.001),
+            "steps": 50,
+            "scheduler": None
+        }
+        opt_post = {
+            "optimizer": partial(optim.SGD,lr=0.01, momentum=0.9, weight_decay=0.001),
+            "steps": 40,
+            "scheduler": None
+        }
+    elif model_string == 'resnet152v3':
+        model = ResNet152V3().to(DEVICE)
+        amount = 0.20
+        batch_size = 128
+        opt_pre = {
+            "optimizer": partial(optim.SGD,lr=0.01, momentum=0.9, weight_decay=0.001),
+            "steps": 50,
+            "scheduler": None
+        }
+        opt_post = {
+            "optimizer": partial(optim.SGD,lr=0.01, momentum=0.9, weight_decay=0.001),
+            "steps": 40,
+            "scheduler": None
+        }
     elif model_string == 'resnet101v2':
         model = ResNet101V2().to(DEVICE)
         amount = 0.20
