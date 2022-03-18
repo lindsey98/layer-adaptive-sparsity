@@ -5,10 +5,10 @@ from tools import *
 """ ARGUMENT PARSING """
 parser = argparse.ArgumentParser()
 parser.add_argument('--seed', type=int, default=42, help='random seed')
-parser.add_argument('--cuda', type=int, help='cuda number')
-parser.add_argument('--model', type=str, help='network')
-parser.add_argument('--weights_path', type=str, help='weights path')
-parser.add_argument('--pruner', type=str, help='pruning method')
+parser.add_argument('--cuda', type=int, default=1, help='cuda number')
+parser.add_argument('--model', type=str, default='resnet101', help='network')
+parser.add_argument('--weights_path', type=str, default='dicts/resnet101_1.pth', help='weights path')
+parser.add_argument('--pruner', type=str, default='lamp', help='pruning method')
 parser.add_argument('--iter_start', type=int, default=1, help='start iteration for pruning')
 parser.add_argument('--iter_end', type=int, default=1, help='start iteration for pruning')
 
@@ -26,7 +26,7 @@ torch.cuda.manual_seed_all(args.seed)
 DEVICE = args.cuda if args.cuda > 0 else 'cpu'
 
 """ IMPORT LOADERS/MODELS/PRUNERS/TRAINERS"""
-model,amount_per_it,batch_size,opt_pre,opt_post = model_and_opt_loader(args.model,DEVICE)
+model,amount_per_it,batch_size,opt_pre,opt_post = model_and_opt_loader(args.model,DEVICE,args.weights_path)
 train_loader, test_loader = dataset_loader(args.model,batch_size=batch_size)
 pruner = weight_pruner_loader(args.pruner)
 trainer = trainer_loader()
@@ -39,9 +39,6 @@ BASE_PATH = f'./results/iterate/{args.model}/{args.seed}'
 if not os.path.exists(BASE_PATH):
     os.makedirs(BASE_PATH)
 
-""" Load (IF NEEDED) """
-state_dict = torch.load(args.weights_path,map_location=torch.device(DEVICE))
-model.load_state_dict(state_dict)
 acc, _ = train.test(model, test_loader)
 print("Testing acc before pruning:", acc)
 

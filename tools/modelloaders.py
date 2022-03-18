@@ -4,8 +4,9 @@ import torchvision.models as tmodels
 from functools import partial
 from tools.models import *
 from tools.pruners import prune_weights_reparam
+import torch
 
-def model_and_opt_loader(model_string,DEVICE):
+def model_and_opt_loader(model_string,DEVICE,weights_path=None):
     if DEVICE == None:
         raise ValueError('No cuda device!')
     if model_string == 'vgg16':
@@ -94,5 +95,10 @@ def model_and_opt_loader(model_string,DEVICE):
         }
     else:
         raise ValueError('Unknown model')
+
+    """ Load (IF NEEDED) """
+    if weights_path is not None:
+        state_dict = torch.load(weights_path, map_location=torch.device(DEVICE))['net']
+        model.load_state_dict(state_dict)
     prune_weights_reparam(model)
     return model,amount,batch_size,opt_pre,opt_post
