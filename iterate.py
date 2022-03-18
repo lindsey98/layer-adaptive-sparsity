@@ -7,6 +7,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--seed', type=int, default=42, help='random seed')
 parser.add_argument('--cuda', type=int, help='cuda number')
 parser.add_argument('--model', type=str, help='network')
+parser.add_argument('--weights_path', type=str, help='weights path')
 parser.add_argument('--pruner', type=str, help='pruning method')
 parser.add_argument('--iter_start', type=int, default=1, help='start iteration for pruning')
 parser.add_argument('--iter_end', type=int, default=1, help='start iteration for pruning')
@@ -38,24 +39,11 @@ BASE_PATH = f'./results/iterate/{args.model}/{args.seed}'
 if not os.path.exists(BASE_PATH):
     os.makedirs(BASE_PATH)
 
-""" PRETRAIN (IF NEEDED) """
-if args.iter_start == 1:
-    filename_string = 'unpruned.pth'
-else:
-    filename_string = args.pruner+str(args.iter_start-1)+'.pth'
-
-if os.path.exists(os.path.join(DICT_PATH,filename_string)):
-    print(f"LOADING PRE-TRAINED MODEL: SEED: {args.seed}, MODEL: {args.model}, ITER: {args.iter_start - 1}")
-    state_dict = torch.load(os.path.join(DICT_PATH,filename_string),map_location=torch.device(DEVICE))
-    model.load_state_dict(state_dict)
-else:
-    if args.iter_start == 1:
-        print(f"PRE-TRAINING A MODEL: SEED: {args.seed}, MODEL: {args.model}")
-        pretrain_results = trainer(model,opt_pre,train_loader,test_loader)
-        torch.save(pretrain_results, DICT_PATH+'/unpruned_loss.dtx')
-        torch.save(model.state_dict(),os.path.join(DICT_PATH,'unpruned.pth'))
-    else:
-        raise ValueError('No (iteratively pruned/trained) model found!')
+""" Load (IF NEEDED) """
+state_dict = torch.load(args.weights_path,map_location=torch.device(DEVICE))
+model.load_state_dict(state_dict)
+acc, _ = train.test(model, test_loader)
+print("Testing acc before pruning:", acc)
 
 """ PRUNE AND RETRAIN """
 for it in range(args.iter_start,args.iter_end+1):
@@ -64,5 +52,5 @@ for it in range(args.iter_start,args.iter_end+1):
     acc, _ = train.test(model, test_loader)
     sparsity = get_model_sparsity(model)
     torch.save(model.state_dict(), os.path.join(DICT_PATH, 'pruned.pth'))
-    print("Testing acc:", acc)
+    print("Testing acc after pruning:", acc)
     print("% weights left:", sparsity)
